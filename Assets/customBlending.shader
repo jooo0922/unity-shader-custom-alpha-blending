@@ -9,7 +9,9 @@ Shader "Custom/customBlending"
         // Tags 설정을 Transparent 로 바꿈으로써, 현재 쉐이더를 '알파 블렌드 쉐이더(반투명 쉐이더)'로 변환함.
         Tags { "RenderType"="Transparent" "Queue"="Transparent" }
         zwrite off // 알파 블렌딩 쉐이더에서는 z버퍼를 비활성화해야 함. 그 이유는 p.463 - 464 참고
-        blend SrcAlpha OneMinusSrcAlpha // 블렌딩 옵션을 설정해 줌.
+        cull off // 면 추려내기를 비활성화하여 quad 메쉬가 양면에서 보이도록 함.
+
+        blend SrcAlpha OneMinusSrcAlpha // 블렌딩 옵션을 'Alpha Blending' 으로 설정해 줌. -> 가장 일반적인 블렌드 팩터 연산. 대상과 배경이 알파에 의해 섞임. p.473~474 참고
 
         CGPROGRAM
 
