@@ -11,7 +11,8 @@ Shader "Custom/customBlending"
         zwrite off // 알파 블렌딩 쉐이더에서는 z버퍼를 비활성화해야 함. 그 이유는 p.463 - 464 참고
         cull off // 면 추려내기를 비활성화하여 quad 메쉬가 양면에서 보이도록 함.
 
-        blend SrcAlpha OneMinusSrcAlpha // 블렌딩 옵션을 'Alpha Blending' 으로 설정해 줌. -> 가장 일반적인 블렌드 팩터 연산. 대상과 배경이 알파에 의해 섞임. p.473~474 참고
+        // blend SrcAlpha OneMinusSrcAlpha // 블렌딩 팩터 연산을 'Alpha Blending' 으로 적용. -> 가장 일반적인 블렌드 팩터 연산. 대상과 배경이 알파에 의해 섞임. p.473 ~ 474 참고
+        blend SrcAlpha One // 블렌딩 팩터 연산을 'Additive' 로 적용. -> 흔히 'Add 모드' 라고 부르는 블렌딩 방식. 겹치면 겹칠수록 밝아져서, 폭발 효과 등에 사용함. p.475 ~ 476 참고 
 
         CGPROGRAM
 
