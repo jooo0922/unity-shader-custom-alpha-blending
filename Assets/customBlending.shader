@@ -14,7 +14,8 @@ Shader "Custom/customBlending"
         // blend SrcAlpha OneMinusSrcAlpha // 블렌딩 팩터 연산을 'Alpha Blending' 으로 적용. -> 가장 일반적인 블렌드 팩터 연산. 대상과 배경이 알파에 의해 섞임. p.473 ~ 474 참고
         // blend SrcAlpha One // 블렌딩 팩터 연산을 'Additive' 로 적용. -> 흔히 'Add 모드' 라고 부르는 블렌딩 방식. 겹치면 겹칠수록 밝아져서, 폭발 효과 등에 사용함. p.475 ~ 476 참고 
         // blend one one // 블렌딩 팩터 연산을 'Additive No Alpha Black is Transparent' 로 적용. -> 두 가지 특징이 있음: 1. 알파값이 적용이 안된다.(1로만 곱해주니까!) 2. Source 의 검은색 부분만 투명하게 처리된다. p.476 ~ 478 참고 
-        blend DstColor Zero // 블렌딩 팩터 연산을 '2x Multiplicative' 로 적용. -> 흔히 'Multi 모드' 라고 부르는 블렌딩 방식. 소스와 배경의 색상값을 그냥 곱해버려서 더 어두워지게 만들어버림. (그래서 Source 가 흰색일수록 배경색이 그대로 나옴.) p.478 ~ 480 참고
+        // blend DstColor Zero // 블렌딩 팩터 연산을 '2x Multiplicative' 로 적용. -> 흔히 'Multi 모드' 라고 부르는 블렌딩 방식. 소스와 배경의 색상값을 그냥 곱해버려서 더 어두워지게 만들어버림. (그래서 Source 가 흰색일수록 배경색이 그대로 나옴.) p.478 ~ 480 참고
+        blend DstColor SrcColor // 블렌딩 팩터 연산을 'Multiplicative' 로 적용. -> 그냥 곱하는 순서만 바꿔서 '배경 * 소스 + 소스 * 배경' 이렇게 더해버림. -> 곱해서 어두워진 두 이미지를 더해버리니 살짝 밝아지면서 색이 올라옴.
 
         CGPROGRAM
 
@@ -31,8 +32,14 @@ Shader "Custom/customBlending"
         void surf (Input IN, inout SurfaceOutput o)
         {
             fixed4 c = tex2D (_MainTex, IN.uv_MainTex);
-            float4 final = lerp(float4(1, 1, 1, 1), c, c.a); // 2x Multiplicative 에서 배경색을 그대로 보이게 하려면, 이런 식으로 surf 함수에서 알파값이 0인 배경 부분을 흰색(float4(1, 1, 1, 1))으로 출력하는 공식을 활용할 수 있음.
-            o.Albedo = final.rgb;
+            
+            // float4 final = lerp(float4(1, 1, 1, 1), c, c.a); // 2x Multiplicative 에서 배경색을 그대로 보이게 하려면, 이런 식으로 surf 함수에서 알파값이 0인 배경 부분을 흰색(float4(1, 1, 1, 1))으로 출력하는 공식을 활용할 수 있음.
+            // o.Emission = final.rgb;
+            // o.Alpha = final.a;
+
+            // Multiplicative 는 source 의 배경부분을 회색(0.5, 0.5, 0.5, 0.5)으로 곱해서 출력해줘야 동일한 두 배경색을 더했을 때 흰색(1) 이 되어서 원래의 배경색이 보이게 될거임. 
+            float4 final = lerp(float4(0.5, 0.5, 0.5, 0.5), c, c.a);
+            o.Emission = final.rgb; // 블렌딩 팩터 연산에서는 가급적 Emission 에 텍셀값을 넣어줄 것.
             o.Alpha = final.a;
         }
         ENDCG
