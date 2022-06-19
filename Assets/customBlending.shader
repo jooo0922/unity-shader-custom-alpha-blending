@@ -12,7 +12,8 @@ Shader "Custom/customBlending"
         cull off // 면 추려내기를 비활성화하여 quad 메쉬가 양면에서 보이도록 함.
 
         // blend SrcAlpha OneMinusSrcAlpha // 블렌딩 팩터 연산을 'Alpha Blending' 으로 적용. -> 가장 일반적인 블렌드 팩터 연산. 대상과 배경이 알파에 의해 섞임. p.473 ~ 474 참고
-        blend SrcAlpha One // 블렌딩 팩터 연산을 'Additive' 로 적용. -> 흔히 'Add 모드' 라고 부르는 블렌딩 방식. 겹치면 겹칠수록 밝아져서, 폭발 효과 등에 사용함. p.475 ~ 476 참고 
+        // blend SrcAlpha One // 블렌딩 팩터 연산을 'Additive' 로 적용. -> 흔히 'Add 모드' 라고 부르는 블렌딩 방식. 겹치면 겹칠수록 밝아져서, 폭발 효과 등에 사용함. p.475 ~ 476 참고 
+        blend one one // 블렌딩 팩터 연산을 'Additive No Alpha Black is Transparent' 로 적용. -> 두 가지 특징이 있음: 1. 알파값이 적용이 안된다.(1로만 곱해주니까!) 2. Source 의 검은색 부분만 투명하게 처리된다. p.476 ~ 478 참고 
 
         CGPROGRAM
 
