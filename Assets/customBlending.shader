@@ -31,8 +31,9 @@ Shader "Custom/customBlending"
         void surf (Input IN, inout SurfaceOutput o)
         {
             fixed4 c = tex2D (_MainTex, IN.uv_MainTex);
-            o.Albedo = c.rgb;
-            o.Alpha = c.a;
+            float4 final = lerp(float4(1, 1, 1, 1), c, c.a); // 2x Multiplicative 에서 배경색을 그대로 보이게 하려면, 이런 식으로 surf 함수에서 알파값이 0인 배경 부분을 흰색(float4(1, 1, 1, 1))으로 출력하는 공식을 활용할 수 있음.
+            o.Albedo = final.rgb;
+            o.Alpha = final.a;
         }
         ENDCG
     }
